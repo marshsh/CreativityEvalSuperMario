@@ -9,9 +9,12 @@ import basicMap.Settings;
 import fr.inria.optimization.cmaes.CMAEvolutionStrategy;
 import fr.inria.optimization.cmaes.fitness.IObjectiveFunction;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.io.*; 
+import java.util.*;
 
 public class CMAMarioSolver {
 	// Sebastian's Wasserstein GAN expects latent vectors of length 32
@@ -22,20 +25,49 @@ public class CMAMarioSolver {
     public static void main(String[] args) throws IOException {
         Settings.setPythonProgram();
         int loops = 100;
+        
+        System.out.println(" \n \n \n Hemos iniciado corriendo la clase CMMarioSolver  \n \n \n");
+        
         double[][] bestX = new double[loops][32];
         double[] bestY = new double[loops];
+        
         MarioEvalFunction marioEvalFunction = new MarioEvalFunction();
+
         for(int i=0; i<loops; i++){
             System.out.println("Iteration:"+ i);
+
             CMAMarioSolver solver = new CMAMarioSolver(marioEvalFunction, Z_SIZE, EVALS);
-            FileWriter write = new FileWriter("timeline"+i+".txt", true);
+
+            FileWriter write = new FileWriter("Evolved" + File.separator + "Timelines" + File.separator +  "timeline"+i+".txt", true);
             PrintWriter print_line = new PrintWriter(write);
-            double[] solution = solver.run(print_line);
+            
+            Object[] solutionObj = solver.run(print_line);
             print_line.close();
-            System.out.println("Best solution = " + Arrays.toString(MarioEvalFunction.mapArrayToOne(solution)));
-            bestX[i] = MarioEvalFunction.mapArrayToOne(solution);
-            bestY[i] = solver.fitFun.valueOf(MarioEvalFunction.mapArrayToOne(solution));
+            double[] solutionBest = (double[]) solutionObj[0]; 
+            double[] solutionMean = (double[]) solutionObj[1]; 
+            
+            System.out.println("Best solution writen to file ");
+
+            bestX[i] = MarioEvalFunction.mapArrayToOne(solutionBest);
+            bestY[i] = solver.fitFun.valueOf(MarioEvalFunction.mapArrayToOne(solutionBest));            
+
+            
+            
+            FileWriter writeBest = new FileWriter("Evolved" + File.separator + "xBestEvolved.txt", true);
+            PrintWriter pl_best = new PrintWriter(writeBest);
+
+            FileWriter writeMean = new FileWriter("Evolved" + File.separator + "xMeanEvolved.txt", true);
+            PrintWriter pl_mean = new PrintWriter(writeMean);
+
+            
+            pl_best.println(Arrays.toString(MarioEvalFunction.mapArrayToOne(solutionBest)));
+            pl_best.close();
+            
+            pl_mean.println(Arrays.toString(MarioEvalFunction.mapArrayToOne(solutionMean)));
+            pl_mean.close();
+            
         }
+        
         marioEvalFunction.exit();
         System.out.println("Done");
         FileWriter write = new FileWriter("ex_output.txt", true);
@@ -50,6 +82,14 @@ public class CMAMarioSolver {
         System.exit(0);
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
     IObjectiveFunction fitFun;
     int nDim;
     CMAEvolutionStrategy cma;
@@ -85,7 +125,7 @@ public class CMAMarioSolver {
         cma.options.stopMaxFunEvals = n;
     }
 
-    public double[] run(PrintWriter print_line) {
+    public Object[] run(PrintWriter print_line) {
 
         // new a CMA-ES and set some initial values
 
@@ -143,7 +183,11 @@ public class CMAMarioSolver {
         // we might return cma.getBestSolution() or cma.getBestX()
         // return cma.getBestX();
         cma.setFitnessOfMeanX(fitFun.valueOf(cma.getMeanX())); // updates the best ever solution
-        return cma.getBestX();
+
+        double[] best = cma.getBestX();
+        double[] mean = cma.getMeanX();
+        
+        return new Object[] {best, mean};
         //return cma.getBestRecentX();
 
     }

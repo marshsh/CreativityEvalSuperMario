@@ -1,5 +1,15 @@
 # MarioGAN
 
+
+## New README
+
+Uno de los archivo en los que se hacen las modificaciones de los settings se encuentra en:
+"/src/ch/idsia/utils/ParameterContainer.java"
+
+En "MarioProcess.java" en la línea 45, se decide con True o False si se abre la ventana para ver la simalución del agente o no.
+
+## Original README
+
 This project allows for the unsupervised learning of a Generative Adversarial Network (GAN) that
 understands the structure of Super Mario Bros. levels. The model is trained on actual Mario levels from
 the [Video Game Level Corpus](https://github.com/TheVGLC/TheVGLC). The trained model is capable of generating
@@ -83,3 +93,11 @@ Alternatively, the level can created from a .json file (as produced by the GAN) 
 ### Play a Level Created By the GAN
 
 In order to play a level created by the GAN, use [viewer.MarioLevelPlayer](https://github.com/TheHedgeify/DagstuhlGAN/blob/master/marioaiDagstuhl/src/viewer/MarioLevelPlayer.java). If a single latent vector is sent to the class as a command line parameter, then an individual level segment will be produced. However, if multiple latent vectors are sent to the GAN, then the different segments will be stitched together in sequence to form one long level.
+
+
+
+### Cuenta de los resultados de l evolución
+21:52 Timeline 0
+23:40 Timeline 15
+
+

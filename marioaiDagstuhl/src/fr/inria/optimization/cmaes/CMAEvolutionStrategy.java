@@ -929,7 +929,7 @@ public class CMAEvolutionStrategy implements java.io.Serializable {
             return minidx(ar, ar.length-1);
         }
         
-        /** @return index of minium value of 1-D double 
+        /** @return index of minimum value of 1-D double 
          *   array between index 0 and maxidx 
          * @param ar double[] 
          * @param maxidx last index to be considered */
@@ -943,7 +943,7 @@ public class CMAEvolutionStrategy implements java.io.Serializable {
             return idx;
         }
 
-        /** @return index of minium value of 1-D double 
+        /** @return index of minimum value of 1-D double 
          *   array between index 0 and maxidx 
          * @param ar double[] 
          * @param maxidx last index to be considered */

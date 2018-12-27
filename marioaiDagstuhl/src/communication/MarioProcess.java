@@ -42,7 +42,7 @@ public class MarioProcess extends Comm {
         if(!humanPlayer) evaluationOptions.setTimeLimit(20);
         // TODO: Make these configurable from commandline?
         evaluationOptions.setMaxFPS(!humanPlayer); // Slow for human players, fast otherwise
-        evaluationOptions.setVisualization(true); // Set true to watch evaluations
+        evaluationOptions.setVisualization(false); // Set true to watch evaluations
         // Create Mario Component
         ToolsConfigurator.CreateMarioComponentFrame(evaluationOptions);
         evaluationOptions.setAgent(AgentsPool.getCurrentAgent());

@@ -27,6 +27,8 @@ import reader.JsonReader;
 public class zzzzMarioLevelPlayer {
 	
 	public zzzzMarioLevelPlayer(Level level){	
+
+		System.out.println("Iniciamos en z Mario Level Player");
 		this.levelm = level;
 	}
 
