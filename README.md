@@ -100,4 +100,6 @@ In order to play a level created by the GAN, use [viewer.MarioLevelPlayer](https
 21:52 Timeline 0
 23:40 Timeline 15
 
+Más o menos 8 por hora.
+
 

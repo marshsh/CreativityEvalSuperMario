@@ -8,10 +8,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.*;
 import java.util.Random;
 import java.util.Arrays;
 
@@ -206,15 +208,14 @@ public class zzzzMarioLevelGuardarMuchos {
 	public static void saveLevelToFileText(String fileName, String fileNameDos, Level level) throws IOException {	
 	
 		
-		
-		 try {
-			File tempFile = new File("./" + fileName + fileNameDos + ".csv");
-	 		FileOutputStream fout = new FileOutputStream(tempFile);
-	 		PrintStream out = new PrintStream(fout);
+		File tempFile = new File("./" + fileName + fileNameDos + ".csv");		
+		 try(FileOutputStream fout = new FileOutputStream(tempFile);
+	 		PrintStream out = new PrintStream(fout);){
 	 	
 	 		level.zzzzSaveText(out);
 
-		 } catch (IOException ex) {
+		 }
+		 catch (IOException ex) {
 		   	System.out.println("There was a problem creating/writing to the temp file");
 	    	ex.printStackTrace();
 		}
@@ -231,12 +232,89 @@ public class zzzzMarioLevelGuardarMuchos {
 		
 	}
 	
+	public static void readLatentVariablesToText(String fileInput, String secondName, String folderSave ) throws IOException {
+		
+		LinkedList<double[]> latentRows = readLVtoArray(fileInput);
+		MarioEvalFunction eval = new MarioEvalFunction();
+		Level level;
+		double valorFun;
+		String valores = "";
+
+		
+		int i = 0;
+		
+		for( double[] rowLat : latentRows) {
+			level = eval.levelFromLatentVector(rowLat);
+//				Save ASCII confuguration of level
+			saveLevelToFileText( folderSave,  "zTexto" + secondName + File.separator +  "Evolved_" + i , level);
+//				Save image of level
+			saveLevel(level, "Creatividad" + File.separator + "z" + secondName  + File.separator + i, false);
+
+		
+		
+		valorFun = eval.valueOf(rowLat);
+		valores = String.valueOf(i) + "," + String.valueOf(valorFun) +  "\n" ;
+
+		
+		// Escribe una nueva línea que contiene el valor de Fun del nivel.
+		String fileName2 = "Creatividad" + File.separator + "EvaluacionesDic" + secondName + ".csv";
+		writeToFile( fileName2 , valores );
+		
+		}
+	
+	
+	}
+
+	
+	
+	
+    public static LinkedList<double[]> readLVtoArray(String fileNameDefined ){
+
+        File file = new File(fileNameDefined);
+
+        LinkedList<double[]> rows = new LinkedList<double[]>();
+        
+        try{
+            // -read from filePooped with Scanner class
+            Scanner inputStream = new Scanner(file);
+            // hashNext() loops line-by-line
+            while(inputStream.hasNext()){
+                //read single line, put in string
+                String data = inputStream.nextLine();
+                data = data.replace("[","");
+                data = data.replace("]","");
+                String[] mData = data.split(",");
+                double[] latentVector = new double[mData.length];                
+                for( int i = 0; i < mData.length; i++ ){
+                    latentVector[i] = Double.parseDouble(mData[i]);
+                }
+                rows.add(latentVector);
+            }
+            // after loop, close scanner
+            inputStream.close();
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+        
+        return rows;
+//        System.out.println(Arrays.toString(rows.getFirst()) + "***");
+    }
+	
 	
 	
 	public static void main(String[] args) throws IOException {
 		generaNiveles();
 
-//		readASCIIlevel("marioaiDagstuhl" + File.separator + "data" + File.separator + "mario" + File.separator + "levels" + File.separator + "mario-1-1.txt");
+		
+//			Guardar los niveles evolucionados en archivos de texto y de imagen a partir de archivo con lista de variables latentes.
+		String nombre = "EvolvedBest";
+		String folderSave = "Creatividad"  + File.separator;
+		String fileInput = "Evolved"  + File.separator + "xBestEvolved.txt" ;
+		readLatentVariablesToText(fileInput, nombre, folderSave);
+
+		
+//		String fileLevel = "marioaiDagstuhl" + File.separator + "data" + File.separator + "mario" + File.separator + "levels" + File.separator + "mario-1-1.txt"; 
+//		readASCIIlevel(fileLevel);
 	}
 
 
