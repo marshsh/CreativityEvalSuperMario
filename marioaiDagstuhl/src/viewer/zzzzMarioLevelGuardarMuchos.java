@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.io.File;
 
 
 import java.awt.image.BufferedImage;
@@ -21,12 +22,18 @@ import javax.imageio.ImageIO;
 
 import basicMap.Settings;
 import ch.idsia.ai.tasks.ProgressTask;
+import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.LevelRenderer;
 import ch.idsia.mario.engine.level.Level;
 import ch.idsia.mario.engine.level.LevelParser;
 import ch.idsia.tools.CmdLineOptions;
 import ch.idsia.tools.EvaluationOptions;
+import ch.idsia.tools.EvaluationInfo;
+
 import cmatest.MarioEvalFunction;
+import communication.MarioProcess;
+
+
 
 /**
  * This file generates several level images by querying the
@@ -234,6 +241,8 @@ public class zzzzMarioLevelGuardarMuchos {
 	
 	public static void readLatentVariablesToText(String fileInput, String secondName, String folderSave ) throws IOException {
 		
+		System.out.println("Hemos llegado al salvador de archivos  \n \n \n \n \n ***********************************888888 \n \n \n \n \n ");
+		
 		LinkedList<double[]> latentRows = readLVtoArray(fileInput);
 		MarioEvalFunction eval = new MarioEvalFunction();
 		Level level;
@@ -244,6 +253,7 @@ public class zzzzMarioLevelGuardarMuchos {
 		int i = 0;
 		
 		for( double[] rowLat : latentRows) {
+			i++;
 			level = eval.levelFromLatentVector(rowLat);
 //				Save ASCII confuguration of level
 			saveLevelToFileText( folderSave,  "zTexto" + secondName + File.separator +  "Evolved_" + i , level);
@@ -300,18 +310,98 @@ public class zzzzMarioLevelGuardarMuchos {
 //        System.out.println(Arrays.toString(rows.getFirst()) + "***");
     }
 	
-	
-	
-	public static void main(String[] args) throws IOException {
-		generaNiveles();
+    
 
-		
-//			Guardar los niveles evolucionados en archivos de texto y de imagen a partir de archivo con lista de variables latentes.
+    
+    
+//	Guardar los niveles evolucionados en archivos CSV y de imagen a partir de archivo con lista de variables latentes.
+//    Además, guarda en un archivo los valores que obtuvo en la evaluación.
+    public static void guardaArchivosEvolved() throws IOException {    	
 		String nombre = "EvolvedBest";
 		String folderSave = "Creatividad"  + File.separator;
 		String fileInput = "Evolved"  + File.separator + "xBestEvolved.txt" ;
 		readLatentVariablesToText(fileInput, nombre, folderSave);
+    	
+    }
+    
+	
+//    Toma los textos en ASCII y los guarda en archivos CSV como los de DagsthulGAN, tmb sus imágenes.
+    public static void guardaArchivosOkarim() throws IOException {
+		String nombre = "EvolvedBest";
+		String folderSave = "Creatividad"  + File.separator;
+		String folderInput = "Creatividad"  + File.separator + "OkarimASCII";
 
+
+		File dir = new File(folderInput);		
+		File[] files = dir.listFiles();
+		
+		int i_0 = 1;
+		int i_1 = 1;
+		int i_2 = 1;
+
+		MarioEvalFunction eval = new MarioEvalFunction();
+		double valorFun = 0;
+		String valores = "";
+		String fileName2 = "";
+		
+		for(File file : files ) {
+
+			System.out.println(file.getPath());
+			Level level = LevelParser.createLevelASCII(file.getPath());
+			
+			if ( file.getName().charAt(1) == '0'){
+				saveLevelToFileText(folderSave, "zTextosOkarim0" + File.separator + String.valueOf(i_0) , level);
+//				saveLevel(level, "Creatividad" + File.separator + "zOkarim0" + File.separator + i_0, false);
+				
+				i_0 ++;				
+				valorFun = eval.valueOfLevel(level);
+				valores = String.valueOf(i_0) + "," + String.valueOf(valorFun) +  "\n" ;
+				fileName2 = "Creatividad" + File.separator + "EvaluacionesDicOkarim0" + ".csv";
+				writeToFile( fileName2 , valores );
+
+			}
+			if ( file.getName().charAt(1) == '1'){
+				saveLevelToFileText(folderSave, "zTextosOkarim1" + File.separator + String.valueOf(i_1) , level);
+//				saveLevel(level, "Creatividad" + File.separator + "zOkarim1" + File.separator + i_1, false);
+				
+				i_1 ++;				
+				valorFun = eval.valueOfLevel(level);
+				valores = String.valueOf(i_1) + "," + String.valueOf(valorFun) +  "\n" ;
+				fileName2 = "Creatividad" + File.separator + "EvaluacionesDicOkarim1" + ".csv";
+				writeToFile( fileName2 , valores );
+
+			}else {
+				saveLevelToFileText(folderSave, "zTextosOkarim2" + File.separator + String.valueOf(i_2) , level);
+//				saveLevel(level, "Creatividad" + File.separator + "zOkarim2" + File.separator + i_2, false);
+				
+				i_2 ++;				
+				valorFun = eval.valueOfLevel(level);
+				valores = String.valueOf(i_2) + "," + String.valueOf(valorFun) +  "\n" ;
+				fileName2 = "Creatividad" + File.separator + "EvaluacionesDicOkarim2" + ".csv";
+				writeToFile( fileName2 , valores );
+				
+			}	
+		}    
+    }
+    
+    
+    
+			
+			
+			
+			
+    
+    
+	
+	public static void main(String[] args) throws IOException {
+//		generaNiveles();
+//		guardaArchivosEvolved();
+
+		System.out.println(" \n \n \n \n \n Holaaaaa **************************** \n \n \n \n \n \n");
+		
+		guardaArchivosOkarim();
+		
+		
 		
 //		String fileLevel = "marioaiDagstuhl" + File.separator + "data" + File.separator + "mario" + File.separator + "levels" + File.separator + "mario-1-1.txt"; 
 //		readASCIIlevel(fileLevel);

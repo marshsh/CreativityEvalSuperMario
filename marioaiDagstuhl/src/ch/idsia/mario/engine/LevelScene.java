@@ -186,6 +186,7 @@ public class LevelScene extends Scene implements SpriteContext, Cloneable
                         return -11; // half-border, can jump through from bottom and can stand on
                     case(10): case(11): case(26): case(27): // flower pot
                     case(14): case(30): case(46): // canon
+                    case(24): case(40): //trampolin
                         return 20;  // angry flower pot or cannon
                 }
                 System.err.println("Unknown value el = " + el + " ; Please, inform the developers");
