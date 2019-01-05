@@ -247,8 +247,8 @@ public class LevelParser {
             case "+": output = 22; break; //"+" : Extra life?
             case "*": output = 22; break; //"O" : Coin block
             case "M": output = 22; break; //"M" : Mushroom
-            case "y": output = 40; break; //"y" : Trampoline
-            case "Y": output = 24; break; //"Y" : Trampoline
+            case "y": output = 9; break; //"y" : Trampoline
+            case "Y": output = 9; break; //"Y" : Trampoline
             default: output=0; break; //"-" : ["passable","empty"],  "Q" : ["solid","question block", "empty question block"],  "E" : ["enemy","damaging","hazard","moving"],
         }
         return output;
