@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 
 def main():
 
-
-
+	# pruebaUNO(esLaPrimeraVez = False)
+	pruebaDOS()
 
 	# Eval.loadEvaluations()
 
@@ -33,7 +33,7 @@ def main():
 
 	# Eval.guardaValiosos('x')
 
-	a = Eval()
+	# a = Eval()
 
 	# Eval.criterio1()
 	# Eval.criterio2()
@@ -50,7 +50,7 @@ def main():
 	# Eval.criterio17(10,5) # Por el momento recomendamos -5 para calidad
 	# Eval.criterio18(100,5) # Por el momento recomendamos -5 para calidad
 
-	Eval.guardaValiosos('')
+	# Eval.guardaValiosos('')
 
 
 
@@ -66,25 +66,24 @@ def loadPickle(file_Name):
 
 
 
-def generaListaArchivosNivelesDagsthul( cantidadNiveles ):
+
+
+
+
+
+
+
+def generaListaArchivosNivelesDagsthul( fileName, cantidadNiveles ):
 	archivosNiveles = []
-	fileName = ""
 
-	for i in range(1,cantidadNiveles+1)
+	for i in range(1,cantidadNiveles+1):
 		fileNameI = fileName + '/' + 'Nivel_'+ str(i) +'.csv'
-		archivosNiveles.append(fileName)
-
+		archivosNiveles.append(fileNameI)
 
 	return archivosNiveles
 
 
-
-
-
-
-
-
-def evaluaDagsthulGANuno():
+def evaluaDagsthulGANuno(esLaPrimeraVez = False):
 	folderOriginales = 'NivelOriginal/Partes'
 	nOriginales = 231
 
@@ -93,9 +92,10 @@ def evaluaDagsthulGANuno():
 
 	evalFileNameDic = 'EvaluacionesDic4.csv'
 
-	distAOriginalesPickleName = 'DistanciasPickle'
+	limiteCalidad = 10
 
-	archivosNiveles = generaListaArchivosNivelesDagsthul(1000)
+	archivosNiveles = generaListaArchivosNivelesDagsthul('zTextosNiveles4', 1000)
+	# print(archivosNiveles)
 
 	pickleDistOrigen = 'pickleDGANunoDistOrigen'
 
@@ -105,8 +105,67 @@ def evaluaDagsthulGANuno():
 
 	ajustador = 2
 
+	esLaPrimeraVez = esLaPrimeraVez
+
+	a = Eval(esLaPrimeraVez, folderOriginales, nOriginales, folderGenerados, nGenerados, evalFileNameDic, 
+		limiteCalidad, archivosNiveles, pickleDistOrigen, picklePlagiados, 
+		longitudNivel, ajustador )
+
+	return a
 
 
+
+def pruebaUNO(esLaPrimeraVez = False):
+	# esLaPrimeraVez = False
+	dagsthulEval =  evaluaDagsthulGANuno(esLaPrimeraVez)
+	print(dagsthulEval.typDic)
+
+
+
+def generaListaArchivosDEvolved(fileName, cantidadNiveles ):
+	archivosNiveles = []
+
+	for i in range(1,cantidadNiveles+1):
+		fileNameI = fileName + '/' + 'Evolved_'+ str(i) +'.csv'
+		archivosNiveles.append(fileNameI)
+
+	return archivosNiveles
+
+
+def evaluaDagsthulEvolved(esLaPrimeraVez = False):
+	folderOriginales = 'NivelOriginal/Partes'
+	nOriginales = 231
+
+	folderGenerados = 'zTextoEvolvedBest'
+	nGenerados = 1000
+
+	evalFileNameDic = 'EvaluacionesDicEvolvedBest.csv'
+
+	limiteCalidad = 10
+
+	archivosNiveles = generaListaArchivosDEvolved('zTextoEvolvedBest', 100)
+	# print(archivosNiveles)
+
+	pickleDistOrigen = 'pickleDEvolvedDistOrigen'
+
+	picklePlagiados = 'pickleDEvolvedPlagiados'
+
+	longitudNivel = 28
+
+	ajustador = 2
+
+	esLaPrimeraVez = esLaPrimeraVez
+
+	a = Eval(esLaPrimeraVez, folderOriginales, nOriginales, folderGenerados, nGenerados, evalFileNameDic, 
+		limiteCalidad, archivosNiveles, pickleDistOrigen, picklePlagiados, 
+		longitudNivel, ajustador )
+
+	return a
+
+def pruebaDOS(esLaPrimeraVez = False):
+	# esLaPrimeraVez = False
+	dagsthulEval =  evaluaDagsthulEvolved(esLaPrimeraVez)
+	print(dagsthulEval.typDic)
 
 
 class Eval():
@@ -128,27 +187,23 @@ class Eval():
 
 # 	limiteCalidad indica cuál es el límite para que sea aceptado un nivel en el diccionario Eval.deCalidad
 # 
-	def __init__(self, esLaPrimera, folderOriginales, nOriginales, folderGenerados, nGenerados, evalFileName, 
-		distAOriginalesPickleName, limiteCalidad, archivosNiveles, pickleDistOrigen, picklePlagiados, 
+	def __init__(self, esLaPrimeraVez, folderOriginales, nOriginales, folderGenerados, nGenerados, evalFileNameDic, 
+		limiteCalidad, archivosNiveles, pickleDistOrigen, picklePlagiados, 
 		longitudNivel, ajustador ):
 
 		print('Inicia objeto Evaluation')
 
-
-		numero = 4
-
-
-
-		self.originales = MakeClusters.arregloNiveles(folderOriginales, nOriginales)
-		self.generados = MakeClusters.arregloNiveles(folderGenerados, nGenerados)
-		self.generadosCompletables = MakeClusters.arregloNiveles(folderGenerados, nGenerados, filtrar = True) 
-
 		# Cargamos diccionario con los valores de las evaluaciones de los niveles (precalcualdas en archivo "evalFileNameDic")
 		self.loadEvaluations(evalFileNameDic, limiteCalidad)
 
+		self.originales = self.arregloNiveles(archivosNiveles, folderOriginales, nOriginales)
+		self.generados = self.arregloNiveles(archivosNiveles, folderGenerados, nGenerados)
+		self.generadosCompletables = self.arregloNiveles(archivosNiveles, folderGenerados, nGenerados, filtrar = True) 
+
+
 
 		# Calculamos o cargamos diccionario con distancias de los niveles al Inspiring Set
-		if esLaPrimera :
+		if esLaPrimeraVez :
 			self.distanciaAOriginyPlagiadosDic(archivosNiveles, pickleDistOrigen, picklePlagiados)
 		else :
 			self.distOrigin = loadPickle(pickleDistOrigen)
@@ -165,7 +220,7 @@ class Eval():
 
 
 
-	def criterio1():
+	def criterio1(self, ):
 		promedio = 0
 
 		for key in self.typDic.keys():
@@ -180,7 +235,7 @@ class Eval():
 		print('criterio1   :  ', r )
 
 
-	def criterio2():
+	def criterio2(self, ):
 		numeroDeNormales = 0
 
 		for key in self.typDic.keys():
@@ -196,7 +251,7 @@ class Eval():
 		print('criterio2   :  ', r )
 
 
-	def criterio9():
+	def criterio9(self, ):
 
 		numeroDePlagios = len(self.plagiados)
 
@@ -209,7 +264,7 @@ class Eval():
 		print('criterio9   :  ', r )
 
 
-	def criterio10a(): # Proporción de niveles generados que no son plagio de los originales.
+	def criterio10a(self, ): # Proporción de niveles generados que no son plagio de los originales.
 
 		numeroDeNiveles = 0
 
@@ -228,7 +283,7 @@ class Eval():
 
 
 
-	def criterio11():
+	def criterio11(self, ):
 
 		numeroDeNiveles = 0
 		suma = 0
@@ -249,7 +304,7 @@ class Eval():
 
 
 
-	def criterio13(alpha):
+	def criterio13(self, alpha):
 
 		numeroDeNiveles = len(self.generados)
 		cuenta = 0
@@ -270,7 +325,7 @@ class Eval():
 
 
 
-	def criterio15(alpha):
+	def criterio15(self, alpha):
 
 		numeroDeNiveles = 0
 		cuenta = 0
@@ -293,7 +348,7 @@ class Eval():
 		print('criterio13   :  ', r )
 
 
-	def criterio3():
+	def criterio3(self, ):
 
 		numeroDeNiveles = len(self.valueDic)
 		suma = 0
@@ -309,7 +364,7 @@ class Eval():
 		print('criterio3   :  ', r )
 
 
-	def criterio4(alpha):
+	def criterio4(self, alpha):
 
 		numeroDeNiveles = len(self.valueDic)
 		cuenta = 0
@@ -332,7 +387,7 @@ class Eval():
 
 
 
-	def criterio12():
+	def criterio12(self, ):
 
 		numeroDeNiveles = 0
 		suma = 0
@@ -352,7 +407,7 @@ class Eval():
 
 
 
-	def criterio14(alpha):
+	def criterio14(self, alpha):
 
 		numeroDeNiveles = len(self.valueDic)
 		cuenta = 0
@@ -372,7 +427,7 @@ class Eval():
 		print('criterio14  (ratio)  :  ', r )
 
 
-	def criterio16(alpha):
+	def criterio16(self, alpha):
 
 		numeroDeNiveles = 0
 		cuenta = 0
@@ -395,7 +450,7 @@ class Eval():
 		print('criterio16  (ratio)  :  ', r )
 
 
-	def criterio17(alpha, gamma):
+	def criterio17(self, alpha, gamma):
 
 		numeroDeNiveles = 0
 		cuenta = 0
@@ -420,7 +475,7 @@ class Eval():
 
 
 
-	def criterio18(alpha, gamma):
+	def criterio18(self, alpha, gamma):
 
 		numeroDeNiveles = 0
 		cuenta = 0
@@ -450,7 +505,7 @@ class Eval():
 
 
 
-	def guardaValiosos(name, diccionarioEvalFile, limiteCalidad):
+	def guardaValiosos(self, name, diccionarioEvalFile, limiteCalidad):
 
 		self.loadEvaluations(diccionarioEvalFile, limiteCalidad) 
 
@@ -472,7 +527,7 @@ class Eval():
 
 
 
-	def loadEvaluations(fileName, limiteCalidad):
+	def loadEvaluations(self, fileName, limiteCalidad):
 		# fileName = 'EvaluacionesDic4.csv'
 		self.valueDic = {}
 		self.incompletables = {}
@@ -530,7 +585,7 @@ class Eval():
 
 # Se necesita haber cargado los valores loadEvaluations() y distanciaAOriginyPlagiadosDic()
 # 	Otiene la medida de tipicalidad a partir del diccionario de distancias y los parámetros pasados.
-	def AjustaTypicalityDic( longitudNivel, ajustador ):
+	def AjustaTypicalityDic(self,  longitudNivel, ajustador ):
 		self.typDic = {}
 
 		for key in self.distOrigin.keys():
@@ -540,7 +595,8 @@ class Eval():
 			if dist>1 :
 				dist = 1
 
-			if float(self.valueDic[str(i)]) > -1 :
+			print('key : ', key)
+			if float(self.valueDic[str(int(key)+1)]) > -1 :
 				dist = 1
 
 			self.typDic[key] = dist
@@ -550,14 +606,14 @@ class Eval():
 
 
 # Se necesita haber cargado los valores loadEvaluations()
-	def distanciaAOriginyPlagiadosDic(archivosNiveles, pickleDistOrigen, picklePlagiados):
+	def distanciaAOriginyPlagiadosDic(self, archivosNiveles, pickleDistOrigen, picklePlagiados):
 
 		self.distOrigin = {}
 		self.plagiados = {}
 
 
-		for i, fileNameI in enumerate archivosNiveles :
-			nivelm = MakeClusters.load1(fileNameI)
+		for i, fileNameI in enumerate(archivosNiveles) :
+			nivelm = self.load1(fileNameI)
 			dist = self.distanciaAOrigin(nivelm)
 			self.distOrigin[str(i)] = dist
 
@@ -573,7 +629,7 @@ class Eval():
 # 	Calcula la distancia el nivel generado a los originales
 # 	Si la distancia del nivel generado a un original es menor que el parámetro self.paramPlagio,
 # 	  se agrega dicho nivel original al de los niveles plagiados.
-	def distanciaAOrigin(nivelm):
+	def distanciaAOrigin(self, nivelm):
 		disMinNivel = 1000000000000000.0
 
 		for i, nivelO in enumerate(self.originales):
@@ -588,13 +644,13 @@ class Eval():
 
 
 		# print(disNivel)
-		return disNivel
+		return disMinNivel
 
 
 # 	Después de encontrar los niveles completables (self.generadosCompletables)
 # 	Guarda la distancia de Todos los niveles generados a todos los niveles originales.
 # 	Los guarda con dropPickle para no tener que volverlos a procesar más adelante.
-	def distanciaRIyPlagiados(savePickleName):
+	def distanciaRIyPlagiados(self, savePickleName):
 
 		# self.originales = MakeClusters.arregloNiveles('NivelOriginal/Partes', 231)
 		# self.generados = MakeClusters.arregloNiveles('zTextosNiveles2', 1000)
@@ -618,7 +674,7 @@ class Eval():
 
 
 
-	def plotDist(namePickle):
+	def plotDist(self, namePickle):
 		distancias = loadPickle(namePickle)
 
 
@@ -632,17 +688,55 @@ class Eval():
 		plt.show()
 
 
-	def cuantosMenorQue(entero,namePickle):
+	def cuantosMenorQue(self, entero,namePickle):
 		distancias = loadPickle(namePickle)
 		parecidos = [x for x in distancias if x< entero ]
 		return len(parecidos)
 
 
-	def imprimeCuantosMenorQue(limite):
+	def imprimeCuantosMenorQue(self, limite):
 		for i in range(limite):
 			a = self.cuantosMenorQue(i,'DistanciasPickle')
 
 			print(' Niveles con distancia menor que ', i, '   :  ', a )
+
+
+	def load1(self, fileName):
+		nivel = []
+		with open(fileName, 'r') as csvfile:
+			lines = csv.reader(csvfile, delimiter=',')
+
+			for row in lines:
+				nivelLine = []
+	
+				for item in row:
+					item.strip()
+					if item != '':
+						nivelLine.append(int(item))
+				nivel.append(nivelLine)
+
+		return nivel
+
+
+# Para filtrar se tiene que haber corrido el método self.loadEvaluations().
+	def arregloNiveles(self, archivosNiveles, fileName, cantidadNiveles, filtrar=False):
+
+		arregloNiveles = []
+
+		for i, fileNameI in enumerate(archivosNiveles):
+
+			if not filtrar:
+				nivelm = self.load1(fileNameI)
+				arregloNiveles.append(nivelm)
+			else:
+				if float(self.valueDic[str(i + 1)]) <= -1 :
+					nivelm = self.load1(fileNameI)
+					arregloNiveles.append(nivelm)
+
+
+		return arregloNiveles
+
+
 
 
 
@@ -831,6 +925,7 @@ class MakeClusters():
 
 
 
+
 	def load1(fileName):
 		nivel = []
 		with open(fileName, 'r') as csvfile:
@@ -849,7 +944,7 @@ class MakeClusters():
 
 
 # Para filtrar se tiene que haber corrido el método self.loadEvaluations().
-	def arregloNiveles( fileName, cantidadNiveles, filtrar=False):
+	def arregloNiveles(self, fileName, cantidadNiveles, filtrar=False):
 
 		arregloNiveles = []
 
@@ -866,6 +961,8 @@ class MakeClusters():
 
 
 		return arregloNiveles
+
+
 
 
 
