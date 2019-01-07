@@ -20,7 +20,7 @@ def main():
 
 	# pruebaUNO(esLaPrimeraVez = False)
 	# pruebaDOS(esLaPrimeraVez = False)
-	# pruebaTRES(esLaPrimeraVez = False)
+	# pruebaTRES(esLaPrimeraVez = True)
 
 	# Eval.loadEvaluations()
 
@@ -105,15 +105,15 @@ def plotDist():
 	dagEvolved = evaluaDagsthulEvolved()
 	okarim = evaluaOkarim0()
 
-	x = [ dag.typDic[key] for key in dag.typDic.keys() ]
-	y = [ dagEvolved.typDic[key] for key in dagEvolved.typDic.keys() ]
-	z = [ okarim.typDic[key] for key in okarim.typDic.keys() ]
+	x = dag.typDic
+	y = dagEvolved.typDic
+	z = okarim.typDic
 
-	bins = np.linspace(0, 1, 100)
+	bins = numpy.linspace(-10, 10, 100)
 
-	# plt.hist(x, bins, alpha=0.25, label='Dagsthul')
-	plt.hist(y, bins, alpha=0.25, label='DEvolved')
-	plt.hist(z, bins, alpha=0.25, label='OkarimLSTM')
+	plt.hist(x, alpha=0.25, label='Dagsthul')
+	plt.hist(y, alpha=0.25, label='DEvolved')
+	plt.hist(z, alpha=0.25, label='Okarima')
 	plt.legend(loc='upper right')
 	plt.title('Histograma de Distancia a Niveles de Inspiración')
 	plt.show()
@@ -237,7 +237,7 @@ def evaluaOkarim0(esLaPrimeraVez = False):
 
 def pruebaTRES(esLaPrimeraVez = False):
 	# esLaPrimeraVez = False
-	OkarEval =  evaluaOkarim0(esLaPrimeraVez)
+	OkarEval =  evaluaDagsthulEvolved(esLaPrimeraVez)
 	print(OkarEval.typDic)
 
 
@@ -662,8 +662,6 @@ class Eval():
 		print('Incompletables :   ', len(self.incompletables))
 		print('Todos :   ', len(self.valueDic))
 
-		print(str(self.valueDic))
-
 		# print('\n', self.deCalidad)
 		# print('\n', self.valueDic)
 
@@ -839,15 +837,16 @@ class Eval():
 
 			fileNameI = folder + os.sep + fileName
 
-			# print(' \n \n \n ********* fileNameI  : ', fileNameI )
+			print(' \n \n \n ********* fileNameI  : ', fileNameI )
 
 			if not filtrar:
 				nivelm = self.load1(fileNameI)
 				arregloNiveles.append(nivelm)
 			else:
 				print('FileName : ', get_integer(fileName))
-				print('valueDic : ', self.valueDic[str(get_integer(fileName))])
-				if float(self.valueDic[str(get_integer(fileName))]) <= -1 :
+				print('valueDic : ', self.valueDic[get_integer(fileName)])
+				print(float(self.valueDic[get_integer(fileName)]))
+				if float(self.valueDic[get_integer(fileName)]) <= -1 :
 					nivelm = self.load1(fileNameI)
 					arregloNiveles.append(nivelm)
 
@@ -903,14 +902,9 @@ class MakeClusters():
 		saltos_2 = 0
 
 		for i in range(len(uno)):
-			for j in range(min(len(uno[0]),len(dos[0]))):
-
-				print('i :    ', i, '     j :    ', j)
-
+			for j in range(len(uno[0])):
 				loseta_1 = uno[i][j]
 				loseta_2 = dos[i][j]
-
-				# print('Dooooooooooooos :  \n ', str(dos))
 
 				if loseta_1 in [16, 21]:
 					if loseta_2 in [0, 5]:
