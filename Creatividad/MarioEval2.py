@@ -10,8 +10,17 @@ import matplotlib.pyplot as plt
 
 def main():
 
+
+	# graficaDistancias()
+	# criteriosRitchie()
+
+	plotDist()
+
+
+
 	# pruebaUNO(esLaPrimeraVez = False)
-	pruebaDOS()
+	# pruebaDOS(esLaPrimeraVez = False)
+	# pruebaTRES(esLaPrimeraVez = True)
 
 	# Eval.loadEvaluations()
 
@@ -67,20 +76,59 @@ def loadPickle(file_Name):
 
 
 
+def criteriosRitchie():
+	dag = evaluaDagsthulGANuno()
+	dagEvolved = evaluaDagsthulEvolved()
+	okarim = evaluaOkarim0()
 
 
 
 
 
 
-def generaListaArchivosNivelesDagsthul( fileName, cantidadNiveles ):
-	archivosNiveles = []
 
-	for i in range(1,cantidadNiveles+1):
-		fileNameI = fileName + '/' + 'Nivel_'+ str(i) +'.csv'
-		archivosNiveles.append(fileNameI)
 
-	return archivosNiveles
+
+
+
+
+
+
+def plotDist():
+	dag = evaluaDagsthulGANuno()
+	dagEvolved = evaluaDagsthulEvolved()
+	okarim = evaluaOkarim0()
+
+	x = dag.typDic
+	y = dagEvolved.typDic
+	z = okarim.typDic
+
+	bins = numpy.linspace(-10, 10, 100)
+
+	plt.hist(x, alpha=0.25, label='Dagsthul')
+	plt.hist(y, alpha=0.25, label='DEvolved')
+	plt.hist(z, alpha=0.25, label='Okarima')
+	plt.legend(loc='upper right')
+	plt.title('Histograma de Distancia a Niveles de Inspiración')
+	plt.show()
+
+
+
+
+	# typDic
+
+
+	# distancias = loadPickle(namePickle)
+
+	# plt.hist(distancias, 50, density=1, facecolor='g',cumulative=True, alpha=0.75)
+	# plt.xlabel('Distancias')
+	# plt.ylabel('Cantidad de Niveles')
+	# # plt.text(60, .025, r'$\mu=100,\ \sigma=15$')
+	# # plt.axis([40, 160, 0, 0.03])
+	# plt.grid(True)
+	# plt.show()
+
+
 
 
 def evaluaDagsthulGANuno(esLaPrimeraVez = False):
@@ -94,9 +142,6 @@ def evaluaDagsthulGANuno(esLaPrimeraVez = False):
 
 	limiteCalidad = 10
 
-	archivosNiveles = generaListaArchivosNivelesDagsthul('zTextosNiveles4', 1000)
-	# print(archivosNiveles)
-
 	pickleDistOrigen = 'pickleDGANunoDistOrigen'
 
 	picklePlagiados = 'pickleDGANunoPlagiados'
@@ -108,7 +153,7 @@ def evaluaDagsthulGANuno(esLaPrimeraVez = False):
 	esLaPrimeraVez = esLaPrimeraVez
 
 	a = Eval(esLaPrimeraVez, folderOriginales, nOriginales, folderGenerados, nGenerados, evalFileNameDic, 
-		limiteCalidad, archivosNiveles, pickleDistOrigen, picklePlagiados, 
+		limiteCalidad, pickleDistOrigen, picklePlagiados, 
 		longitudNivel, ajustador )
 
 	return a
@@ -122,15 +167,6 @@ def pruebaUNO(esLaPrimeraVez = False):
 
 
 
-def generaListaArchivosDEvolved(fileName, cantidadNiveles ):
-	archivosNiveles = []
-
-	for i in range(1,cantidadNiveles+1):
-		fileNameI = fileName + '/' + 'Evolved_'+ str(i) +'.csv'
-		archivosNiveles.append(fileNameI)
-
-	return archivosNiveles
-
 
 def evaluaDagsthulEvolved(esLaPrimeraVez = False):
 	folderOriginales = 'NivelOriginal/Partes'
@@ -143,9 +179,6 @@ def evaluaDagsthulEvolved(esLaPrimeraVez = False):
 
 	limiteCalidad = 10
 
-	archivosNiveles = generaListaArchivosDEvolved('zTextoEvolvedBest', 100)
-	# print(archivosNiveles)
-
 	pickleDistOrigen = 'pickleDEvolvedDistOrigen'
 
 	picklePlagiados = 'pickleDEvolvedPlagiados'
@@ -157,7 +190,7 @@ def evaluaDagsthulEvolved(esLaPrimeraVez = False):
 	esLaPrimeraVez = esLaPrimeraVez
 
 	a = Eval(esLaPrimeraVez, folderOriginales, nOriginales, folderGenerados, nGenerados, evalFileNameDic, 
-		limiteCalidad, archivosNiveles, pickleDistOrigen, picklePlagiados, 
+		limiteCalidad, pickleDistOrigen, picklePlagiados, 
 		longitudNivel, ajustador )
 
 	return a
@@ -166,6 +199,67 @@ def pruebaDOS(esLaPrimeraVez = False):
 	# esLaPrimeraVez = False
 	dagsthulEval =  evaluaDagsthulEvolved(esLaPrimeraVez)
 	print(dagsthulEval.typDic)
+
+
+
+def evaluaOkarim0(esLaPrimeraVez = False):
+	folderOriginales = 'NivelOriginal/OkarimCSV/1'
+	nOriginales = 6
+
+	folderGenerados = 'zTextosOkarim0'
+	nGenerados = 206
+
+	evalFileNameDic = 'EvaluacionesDicOkarim0.csv'
+
+	limiteCalidad = 10
+
+	pickleDistOrigen = 'pickleOkarimDistOrigen'
+
+	picklePlagiados = 'pickleOkarimPlagiados'
+
+	longitudNivel = 203
+
+	ajustador = 2
+
+	esLaPrimeraVez = esLaPrimeraVez
+
+	a = Eval(esLaPrimeraVez, folderOriginales, nOriginales, folderGenerados, nGenerados, evalFileNameDic, 
+		limiteCalidad, pickleDistOrigen, picklePlagiados, 
+		longitudNivel, ajustador )
+
+	return a
+
+def pruebaTRES(esLaPrimeraVez = False):
+	# esLaPrimeraVez = False
+	OkarEval =  evaluaDagsthulEvolved(esLaPrimeraVez)
+	print(OkarEval.typDic)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class Eval():
@@ -188,7 +282,7 @@ class Eval():
 # 	limiteCalidad indica cuál es el límite para que sea aceptado un nivel en el diccionario Eval.deCalidad
 # 
 	def __init__(self, esLaPrimeraVez, folderOriginales, nOriginales, folderGenerados, nGenerados, evalFileNameDic, 
-		limiteCalidad, archivosNiveles, pickleDistOrigen, picklePlagiados, 
+		limiteCalidad, pickleDistOrigen, picklePlagiados, 
 		longitudNivel, ajustador ):
 
 		print('Inicia objeto Evaluation')
@@ -196,15 +290,15 @@ class Eval():
 		# Cargamos diccionario con los valores de las evaluaciones de los niveles (precalcualdas en archivo "evalFileNameDic")
 		self.loadEvaluations(evalFileNameDic, limiteCalidad)
 
-		self.originales = self.arregloNiveles(archivosNiveles, folderOriginales, nOriginales)
-		self.generados = self.arregloNiveles(archivosNiveles, folderGenerados, nGenerados)
-		self.generadosCompletables = self.arregloNiveles(archivosNiveles, folderGenerados, nGenerados, filtrar = True) 
+		self.originales = self.arregloNiveles( folderOriginales, nOriginales)
+		self.generados = self.arregloNiveles( folderGenerados, nGenerados)
+		self.generadosCompletables = self.arregloNiveles( folderGenerados, nGenerados, filtrar = True) 
 
 
 
 		# Calculamos o cargamos diccionario con distancias de los niveles al Inspiring Set
 		if esLaPrimeraVez :
-			self.distanciaAOriginyPlagiadosDic(archivosNiveles, pickleDistOrigen, picklePlagiados)
+			self.distanciaAOriginyPlagiadosDic(folderGenerados, pickleDistOrigen, picklePlagiados)
 		else :
 			self.distOrigin = loadPickle(pickleDistOrigen)
 			self.plagiados = loadPickle(picklePlagiados)
@@ -545,15 +639,15 @@ class Eval():
 
 			for row in reader:
 				self.valueDic[row[0]] = float(row[1])
-				print(row)
-				print(self.valueDic[row[0]])
+				# print(row)
+				# print(self.valueDic[row[0]])
 
 				if float(row[1]) > -1:
 					self.incompletables[row[0]] = float(row[1])
 
 				if float(row[1]) < limiteCalidad:
 					self.deCalidad[row[0]] = float(row[1])
-					print(self.deCalidad[row[0]], '\n\n\n')
+					# print(self.deCalidad[row[0]], '\n\n\n')
 
 				if float(row[1]) <= -1:
 					self.completable[row[0]] = float(row[1])
@@ -590,32 +684,42 @@ class Eval():
 
 		for key in self.distOrigin.keys():
 
-			dist = self.distOrigin[key]/(longitudNivel*ajustador)
+			print('self.distOrigin[key])  : ', self.distOrigin[key])
+			dist = float(self.distOrigin[key])/(longitudNivel*ajustador)
+			print('dist   : ', dist)
 
 			if dist>1 :
 				dist = 1
 
-			print('key : ', key)
+			# print('key : ', key)
 			if float(self.valueDic[str(int(key)+1)]) > -1 :
 				dist = 1
 
 			self.typDic[key] = dist
+
+		self.typDic['0'] = 99.0
 
 
 
 
 
 # Se necesita haber cargado los valores loadEvaluations()
-	def distanciaAOriginyPlagiadosDic(self, archivosNiveles, pickleDistOrigen, picklePlagiados):
+	def distanciaAOriginyPlagiadosDic(self, folder, pickleDistOrigen, picklePlagiados):
 
 		self.distOrigin = {}
 		self.plagiados = {}
 
+		archivosNiveles = os.listdir(folder)
+		archivosNiveles.sort()
 
-		for i, fileNameI in enumerate(archivosNiveles) :
+		for i, fileName in enumerate(archivosNiveles) :
+
+			fileNameI = folder + os.sep + fileName
+
 			nivelm = self.load1(fileNameI)
 			dist = self.distanciaAOrigin(nivelm)
 			self.distOrigin[str(i)] = dist
+			print(' \n * \n * \n * \n Colocamos la distancia  : ', dist, ' \n En la entrada ', i, ' del diccionario  : ',  self.distOrigin[str(i)] , '\n' )
 
 
 
@@ -630,10 +734,14 @@ class Eval():
 # 	Si la distancia del nivel generado a un original es menor que el parámetro self.paramPlagio,
 # 	  se agrega dicho nivel original al de los niveles plagiados.
 	def distanciaAOrigin(self, nivelm):
-		disMinNivel = 1000000000000000.0
+		disMinNivel = 1000000000000
 
 		for i, nivelO in enumerate(self.originales):
 			distanciaO = MakeClusters.distanciaNiveles(nivelm,nivelO)
+
+			if distanciaO == 0:
+				print(str(nivelO))
+
 			disMinNivel = min(disMinNivel,distanciaO)
 
 			if distanciaO <= self.paramPlagio:
@@ -643,7 +751,6 @@ class Eval():
 					self.plagiados[i] = 1
 
 
-		# print(disNivel)
 		return disMinNivel
 
 
@@ -674,18 +781,11 @@ class Eval():
 
 
 
-	def plotDist(self, namePickle):
-		distancias = loadPickle(namePickle)
 
 
-		plt.hist(distancias, 50, density=1, facecolor='g',cumulative=True, alpha=0.75)
-		plt.xlabel('Distancias')
-		plt.ylabel('Cantidad de Niveles')
-		plt.title('Histograma de Distancia a Niveles de Inspiración')
-		# plt.text(60, .025, r'$\mu=100,\ \sigma=15$')
-		# plt.axis([40, 160, 0, 0.03])
-		plt.grid(True)
-		plt.show()
+
+
+
 
 
 	def cuantosMenorQue(self, entero,namePickle):
@@ -719,11 +819,19 @@ class Eval():
 
 
 # Para filtrar se tiene que haber corrido el método self.loadEvaluations().
-	def arregloNiveles(self, archivosNiveles, fileName, cantidadNiveles, filtrar=False):
+	def arregloNiveles(self, folder, fileName, filtrar=False):
 
 		arregloNiveles = []
 
-		for i, fileNameI in enumerate(archivosNiveles):
+		archivosNiveles = os.listdir(folder)
+		archivosNiveles.sort()
+
+
+		for i, fileName in enumerate(archivosNiveles):
+
+			fileNameI = folder + os.sep + fileName
+
+			print(' \n \n \n ********* fileNameI  : ', fileNameI )
 
 			if not filtrar:
 				nivelm = self.load1(fileNameI)
@@ -944,23 +1052,23 @@ class MakeClusters():
 
 
 # Para filtrar se tiene que haber corrido el método self.loadEvaluations().
-	def arregloNiveles(self, fileName, cantidadNiveles, filtrar=False):
+	# def arregloNiveles(self, fileName, cantidadNiveles, filtrar=False):
 
-		arregloNiveles = []
+	# 	arregloNiveles = []
 
-		for i in range(1,cantidadNiveles+1):
-			fileNameI = fileName + '/' + 'Nivel_'+ str(i) +'.csv'
+	# 	for i in range(1,cantidadNiveles+1):
+	# 		fileNameI = fileName + '/' + 'Nivel_'+ str(i) +'.csv'
 
-			if not filtrar:
-				nivelm = MakeClusters.load1(fileNameI)
-				arregloNiveles.append(nivelm)
-			else:
-				if float(self.valueDic[str(i)]) <= -1 :
-					nivelm = MakeClusters.load1(fileNameI)
-					arregloNiveles.append(nivelm)
+	# 		if not filtrar:
+	# 			nivelm = MakeClusters.load1(fileNameI)
+	# 			arregloNiveles.append(nivelm)
+	# 		else:
+	# 			if float(self.valueDic[str(i)]) <= -1 :
+	# 				nivelm = MakeClusters.load1(fileNameI)
+	# 				arregloNiveles.append(nivelm)
 
 
-		return arregloNiveles
+	# 	return arregloNiveles
 
 
 

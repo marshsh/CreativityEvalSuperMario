@@ -386,6 +386,29 @@ public class zzzzMarioLevelGuardarMuchos {
     
     
     
+    public static void guardaArchivosOkarimOriginales()throws IOException {
+		String nombre = "EvolvedBest";
+		String folderInput = "Creatividad"  + File.separator + "NivelOriginal" + File.separator + "Okarim" + File.separator + "3";
+		String folderSave = "Creatividad"  + File.separator + "NivelOriginal" + File.separator + "OkarimCSV" + File.separator + "3";
+
+
+		File dir = new File(folderInput);		
+		File[] files = dir.listFiles();
+
+		MarioEvalFunction eval = new MarioEvalFunction();
+		int i = 0;
+		String fileName2 = "";
+		
+		for(File file : files ) {
+
+			System.out.println(file.getPath());
+			Level level = LevelParser.createLevelASCII(file.getPath());
+			saveLevelToFileText(folderSave, File.separator + String.valueOf(i) , level);
+			i ++;
+		}
+    }
+    
+
 			
 			
 			
@@ -399,7 +422,7 @@ public class zzzzMarioLevelGuardarMuchos {
 
 		System.out.println(" \n \n \n \n \n Holaaaaa **************************** \n \n \n \n \n \n");
 		
-		guardaArchivosOkarim();
+		guardaArchivosOkarimOriginales();
 		
 		
 		
