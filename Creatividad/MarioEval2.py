@@ -11,16 +11,21 @@ import matplotlib.pyplot as plt
 def main():
 
 
-	# graficaDistancias()
-	# criteriosRitchie()
-
-	plotDist()
 
 
 
 	# pruebaUNO(esLaPrimeraVez = False)
 	# pruebaDOS(esLaPrimeraVez = False)
 	# pruebaTRES(esLaPrimeraVez = False)
+	# plotDist('')
+	# criteriosRitchie()
+
+
+	# listaCriteriosTipicalidad()
+	listaCriteriosValor()
+
+
+##################################################################################
 
 	# Eval.loadEvaluations()
 
@@ -73,16 +78,6 @@ def loadPickle(file_Name):
 	return b
 
 
-
-
-
-def criteriosRitchie():
-	dag = evaluaDagsthulGANuno()
-	dagEvolved = evaluaDagsthulEvolved()
-	okarim = evaluaOkarim0()
-
-
-
 def get_integer(s):
     w = ''
     for k in s:
@@ -100,10 +95,43 @@ def get_integer(s):
 
 
 
-def plotDist():
+def getEvals():
 	dag = evaluaDagsthulGANuno()
 	dagEvolved = evaluaDagsthulEvolved()
 	okarim = evaluaOkarim0()
+	return dag, dagEvolved, okarim
+
+
+def criteriosRitchie():
+
+	# dag.
+
+	dag.criterio1()
+	dag.criterio2()
+	dag.criterio9()
+	dag.criterio10a()
+	dag.criterio11()
+	dag.criterio13(15)
+	dag.criterio15(15)
+	dag.criterio3()
+	dag.criterio4(5) # Por el momento recomendamos -5 para calidad
+	dag.criterio12()
+	dag.criterio14(5) # Por el momento recomendamos -5 para calidad
+	dag.criterio16(5) # Por el momento recomendamos -5 para calidad
+	dag.criterio17(10,5) # Por el momento recomendamos -5 para calidad
+	dag.criterio18(100,5) # Por el momento recomendamos -5 para calidad
+
+
+
+
+
+
+def plotDist(imageNameI):
+	dag = evaluaDagsthulGANuno()
+	dagEvolved = evaluaDagsthulEvolved()
+	okarim = evaluaOkarim0()
+
+	fig = plt.figure()
 
 	x = [ dag.typDic[key] for key in dag.typDic.keys() ]
 	y = [ dagEvolved.typDic[key] for key in dagEvolved.typDic.keys() ]
@@ -111,11 +139,17 @@ def plotDist():
 
 	bins = np.linspace(0, 1, 100)
 
-	# plt.hist(x, bins, alpha=0.25, label='Dagsthul')
-	plt.hist(y, bins, alpha=0.25, label='DEvolved')
-	plt.hist(z, bins, alpha=0.25, label='OkarimLSTM')
+	plt.hist(x, bins, alpha=0.8, label='Dagsthul', color = 'g')
+	# plt.hist(y, bins, alpha=0.5, label='DagsthulGAN Evolved', color = 'r')
+	# plt.hist(z, bins, alpha=0.5, label='OkarimLSTM', color = 'c')
 	plt.legend(loc='upper right')
-	plt.title('Histograma de Distancia a Niveles de Inspiración')
+	plt.title('Histograma de Tipicalidad basada en Distancia a Niveles de Inspiración')
+
+	imageName = imageNameI
+	imageName = 'x'
+
+
+	fig.savefig('imagenes/' + imageName + '.png')
 	plt.show()
 
 
@@ -154,7 +188,7 @@ def evaluaDagsthulGANuno(esLaPrimeraVez = False):
 
 	longitudNivel = 28
 
-	ajustador = 2
+	ajustador = 3
 
 	esLaPrimeraVez = esLaPrimeraVez
 
@@ -191,7 +225,7 @@ def evaluaDagsthulEvolved(esLaPrimeraVez = False):
 
 	longitudNivel = 28
 
-	ajustador = 2
+	ajustador = 3
 
 	esLaPrimeraVez = esLaPrimeraVez
 
@@ -223,9 +257,9 @@ def evaluaOkarim0(esLaPrimeraVez = False):
 
 	picklePlagiados = 'pickleOkarimPlagiados'
 
-	longitudNivel = 203
+	longitudNivel = 203*1.8
 
-	ajustador = 2
+	ajustador = 3
 
 	esLaPrimeraVez = esLaPrimeraVez
 
@@ -241,18 +275,65 @@ def pruebaTRES(esLaPrimeraVez = False):
 	print(OkarEval.typDic)
 
 
+def formatoTabla(criterio,dagC,dagEvolC,okarC):
+	# print(' \n \n \n \n \n \n \n \n  ')
+	s = "{}   &   {:.4f}   &   {:.4f}   &   {:.4f}    \\\\ ".format(criterio,dagC,dagEvolC,okarC)
+
+	print(s)
+	return s
+
+def listaCriteriosTipicalidad():
+
+
+	dag, dagEvol, okar = getEvals()
+	print(' \n \n \n \n \n \n \n \n  ')
+	print(' \n \n \n \n \n \n \n \n  ')
+
+	formatoTabla('Criterio 1', dag.criterio1(), dagEvol.criterio1(), okar.criterio1())
+	formatoTabla('Criterio 2', dag.criterio2(), dagEvol.criterio2(), okar.criterio2())
+	formatoTabla('Criterio 9', dag.criterio9(), dagEvol.criterio9(), okar.criterio9())
+	formatoTabla('Criterio 10a', dag.criterio10a(), dagEvol.criterio10a(), okar.criterio10a())
+	formatoTabla('Criterio 11', dag.criterio11(), dagEvol.criterio11(), okar.criterio11())
+	formatoTabla('Criterio 13', dag.criterio13(0.1), dagEvol.criterio13(0.1), okar.criterio13(0.1))
+	formatoTabla('Criterio 15', dag.criterio15(0.2), dagEvol.criterio15(0.2), okar.criterio15(0.2))
+
+	# dag.criterio1()
+	# dag.criterio2()
+	# dag.criterio9()
+	# dag.criterio10a()
+	# dag.criterio11()
+	# dag.criterio13(15)
+	# dag.criterio15(15)
 
 
 
 
 
+def listaCriteriosValor():
+
+
+	dag, dagEvol, okar = getEvals()
+	print(' \n \n \n \n \n \n \n \n  ')
+	print(' \n \n \n \n \n \n \n \n  ')
+
+	formatoTabla('Criterio 3', dag.criterio3(), dagEvol.criterio3(), okar.criterio3())
+	formatoTabla('Criterio 4', dag.criterio4(5), dagEvol.criterio4(5), okar.criterio14(5))
+	formatoTabla('Criterio 12', dag.criterio12(), dagEvol.criterio12(), okar.criterio12())
+	formatoTabla('Criterio 14', dag.criterio14(5), dagEvol.criterio14(5), okar.criterio14(5))
+	formatoTabla('Criterio 16', dag.criterio16(5), dagEvol.criterio16(5), okar.criterio16(5))
+	formatoTabla('Criterio 17', dag.criterio17(0.2,5), dagEvol.criterio17(0.2,5), okar.criterio17(0.2,5))
+	formatoTabla('Criterio 18', dag.criterio18(0.8,5), dagEvol.criterio18(0.8,5), okar.criterio18(0.8,5))
 
 
 
 
-
-
-
+	# Eval.criterio3()
+	# Eval.criterio4(5) # Por el momento recomendamos -5 para calidad
+	# Eval.criterio12()
+	# Eval.criterio14(5) # Por el momento recomendamos -5 para calidad
+	# Eval.criterio16(5) # Por el momento recomendamos -5 para calidad
+	# Eval.criterio17(10,5) # Por el momento recomendamos -5 para calidad
+	# Eval.criterio18(100,5) # Por el momento recomendamos -5 para calidad
 
 
 
@@ -269,7 +350,7 @@ def pruebaTRES(esLaPrimeraVez = False):
 
 
 class Eval():
-	paramPlagio = 5 #Incluyente. (Si cambiamos 5 losetas, sigue siendo plagio).
+	paramPlagio = 0.1 #Incluyente. (Si cambiamos 5 losetas, sigue siendo plagio).
 
 	valueDic = {} # Todos los niveles evaluados.
 	incompletables = {}
@@ -329,10 +410,12 @@ class Eval():
 		r = promedio / len(self.typDic.keys())
 
 
-		print('\n \n ')
-		print('suma de distancias   :  ', promedio )
-		print('Número de Elementos   :  ', len(self.typDic.keys()) )
-		print('criterio1   :  ', r )
+		# print('\n \n ')
+		# print('suma de distancias   :  ', promedio )
+		# print('Número de Elementos   :  ', len(self.typDic.keys()) )
+		# print('criterio1   :  ', r )
+
+		return r
 
 
 	def criterio2(self, ):
@@ -340,15 +423,17 @@ class Eval():
 
 		for key in self.typDic.keys():
 
-			if ( self.typDic[key] >= 10 ) & ( self.typDic[key] != 400 ):
+			if ( self.typDic[key] >= 0.2 ) & ( self.typDic[key] != 400 ):
 				numeroDeNormales += 1
 
 		r = numeroDeNormales / len(self.typDic.keys())
 
-		print('\n \n ')
-		print('Cuenta de niveles en Ta   :  ', numeroDeNormales )
-		print('Número de Elementos   :  ', len(self.typDic.keys()) )
-		print('criterio2   :  ', r )
+		# print('\n \n ')
+		# print('Cuenta de niveles en Ta   :  ', numeroDeNormales )
+		# print('Número de Elementos   :  ', len(self.typDic.keys()) )
+		# print('criterio2   :  ', r )
+
+		return r
 
 
 	def criterio9(self, ):
@@ -357,11 +442,13 @@ class Eval():
 
 		r = numeroDePlagios / len(self.originales) 
 
-		print('\n \n ')
-		print('Parámetro de distancia para que un nivel se considere plagio  :  ', self.paramPlagio)
-		print('Cuenta de niveles Originales que son Plagios por el sistema   :  ', numeroDePlagios )
-		print('Número de Originales   :  ', len(self.originales) )
-		print('criterio9   :  ', r )
+		# print('\n \n ')
+		# print('Parámetro de distancia para que un nivel se considere plagio  :  ', self.paramPlagio)
+		# print('Cuenta de niveles Originales que son Plagios por el sistema   :  ', numeroDePlagios )
+		# print('Número de Originales   :  ', len(self.originales) )
+		# print('criterio9   :  ', r )
+
+		return r
 
 
 	def criterio10a(self, ): # Proporción de niveles generados que no son plagio de los originales.
@@ -370,17 +457,18 @@ class Eval():
 
 		for key in self.typDic.keys():
 
-			if ( self.typDic[key] > self.paramPlagio ):
+			if ( self.typDic[key] > 0.00001 ):
 				numeroDeNiveles += 1
 
 		r = numeroDeNiveles / len(self.typDic.keys())
 
-		print('\n \n ')
-		print('Parámetro de distancia para que un nivel se considere plagio  :  ', self.paramPlagio)
-		print('Cuenta de niveles que NO son un plagio   :  ', numeroDeNiveles )
-		print('Número de Elementos   :  ', len(self.typDic.keys()) )
-		print('criterio10a   :  ', r )
+		# print('\n \n ')
+		# print('Parámetro de distancia para que un nivel se considere plagio  :  ', self.paramPlagio)
+		# print('Cuenta de niveles que NO son un plagio   :  ', numeroDeNiveles )
+		# print('Número de Elementos   :  ', len(self.typDic.keys()) )
+		# print('criterio10a   :  ', r )
 
+		return r
 
 
 	def criterio11(self, ):
@@ -390,18 +478,22 @@ class Eval():
 
 		for key in self.typDic.keys():
 
-			if ( self.typDic[key] > self.paramPlagio ):
+			if ( self.typDic[key] < 1- 0.00001 ):
 				numeroDeNiveles += 1
 				suma += self.typDic[key]
 
+		if numeroDeNiveles == 0:
+			return 0
+
 		r = suma / numeroDeNiveles
 
-		print('\n \n ')
-		print('Parámetro de distancia para que un nivel se considere plagio  :  ', self.paramPlagio)
-		print('Suma de typ(a) de niveles a que nos son plagio   :  ', suma )
-		print('Número de Elementos   :  ', numeroDeNiveles )
-		print('criterio10a   :  ', r )
+		# print('\n \n ')
+		# print('Parámetro de distancia para que un nivel se considere plagio  :  ', self.paramPlagio)
+		# print('Suma de typ(a) de niveles a que nos son plagio   :  ', suma )
+		# print('Número de Elementos   :  ', numeroDeNiveles )
+		# print('criterio11   :  ', r )
 
+		return r
 
 
 	def criterio13(self, alpha):
@@ -411,17 +503,19 @@ class Eval():
 
 		for key in self.typDic.keys():
 
-			if ( self.typDic[key] > alpha ) & ( self.typDic[key] != 400 ) :
+			if ( self.typDic[key] > alpha ) :
 				cuenta += 1
 				
 
 		r = cuenta / numeroDeNiveles
 
-		print('\n \n ')
-		print('Parámetro alpha  :  ', alpha)
-		print('Número de niveles pasables más atípicos que ', alpha, '   :  ', cuenta )
-		print('Número de Elementos   :  ', numeroDeNiveles ) 
-		print('criterio13   :  ', r )
+		# print('\n \n ')
+		# print('Parámetro alpha  :  ', alpha)
+		# print('Número de niveles pasables más atípicos que ', alpha, '   :  ', cuenta )
+		# print('Número de Elementos   :  ', numeroDeNiveles ) 
+		# print('criterio13   :  ', r )
+
+		return r
 
 
 
@@ -439,13 +533,16 @@ class Eval():
 				numeroDeNiveles += 1
 
 
+
 		r = cuenta / numeroDeNiveles
 
-		print('\n \n ')
-		print('Parámetro alpha  :  ', alpha)
-		print('Número de niveles pasables más atípicos que ', alpha, '   :  ', cuenta )
-		print('Número de niveles generados que nos son plagio  :  ', numeroDeNiveles ) 
-		print('criterio13   :  ', r )
+		# print('\n \n ')
+		# print('Parámetro alpha  :  ', alpha)
+		# print('Número de niveles pasables más atípicos que ', alpha, '   :  ', cuenta )
+		# print('Número de niveles generados que nos son plagio  :  ', numeroDeNiveles ) 
+		# print('criterio15   :  ', r )
+
+		return r
 
 
 	def criterio3(self, ):
@@ -454,14 +551,16 @@ class Eval():
 		suma = 0
 
 		for key in self.valueDic.keys():
-			suma += self.typDic[key]
+			suma += self.typDic[str(int(key)-1)]
 
 		r = suma / numeroDeNiveles
 
-		print('\n \n ')
-		print('Suma de typ(a) de niveles a que nos son plagio   :  ', suma )
-		print('Número de Elementos   :  ', numeroDeNiveles )
-		print('criterio3   :  ', r )
+		# print('\n \n ')
+		# print('Suma de typ(a) de niveles a que nos son plagio   :  ', suma )
+		# print('Número de Elementos   :  ', numeroDeNiveles )
+		# print('criterio3   :  ', r )
+
+		return r
 
 
 	def criterio4(self, alpha):
@@ -477,11 +576,13 @@ class Eval():
 
 		r = cuenta / numeroDeNiveles
 
-		print('\n \n ')
-		print('Parámetro alpha  :  ', alpha)
-		print('Número de niveles con valor mayor que ', alpha, '   :  ', cuenta )
-		print('Número de Elementos   :  ', numeroDeNiveles ) 
-		print('criterio4   :  ', r )
+		# print('\n \n ')
+		# print('Parámetro alpha  :  ', alpha)
+		# print('Número de niveles con valor mayor que ', alpha, '   :  ', cuenta )
+		# print('Número de Elementos   :  ', numeroDeNiveles ) 
+		# print('criterio4   :  ', r )
+
+		return r
 
 
 
@@ -494,16 +595,18 @@ class Eval():
 
 		for key in self.valueDic.keys():
 			
-			if ( self.typDic[key] > self.paramPlagio):
+			if ( self.typDic[str(int(key)-1)] < 1 - 0.00001 ):
 				suma += self.valueDic[key]
 				numeroDeNiveles += 1
 
 		r = suma / numeroDeNiveles
 
-		print('\n \n ')
-		print('Suma de val(a) de niveles a que nos son plagio   :  ', suma )
-		print('Número de Elementos no plagia  :  ', numeroDeNiveles )
-		print('criterio12 (average)  :  ', r )
+		# print('\n \n ')
+		# print('Suma de val(a) de niveles a que nos son plagio   :  ', suma )
+		# print('Número de Elementos no plagia  :  ', numeroDeNiveles )
+		# print('criterio12 (average)  :  ', r )
+
+		return r
 
 
 
@@ -514,17 +617,19 @@ class Eval():
 
 		for key in self.valueDic.keys():
 
-			if ( -self.valueDic[key] > alpha ) & ( self.typDic[key] > self.paramPlagio ) :
+			if ( -self.valueDic[key] > alpha ) & ( self.typDic[str(int(key)-1)] < 1 - 0.00001) :
 				cuenta += 1
 				
 
 		r = cuenta / numeroDeNiveles
 
-		print('\n \n ')
-		print('Parámetro alpha  :  ', alpha)
-		print('Número de niveles no plagia con valor mayor que ', alpha, '   :  ', cuenta )
-		print('Número total de Elementos generados   :  ', numeroDeNiveles ) 
-		print('criterio14  (ratio)  :  ', r )
+		# print('\n \n ')
+		# print('Parámetro alpha  :  ', alpha)
+		# print('Número de niveles no plagia con valor mayor que ', alpha, '   :  ', cuenta )
+		# print('Número total de Elementos generados   :  ', numeroDeNiveles ) 
+		# print('criterio14  (ratio)  :  ', r )
+
+		return r
 
 
 	def criterio16(self, alpha):
@@ -534,7 +639,7 @@ class Eval():
 
 		for key in self.valueDic.keys():
 
-			if ( self.typDic[key] > self.paramPlagio ) :
+			if ( self.typDic[str(int(key)-1)] > self.paramPlagio ) :
 				numeroDeNiveles += 1
 
 				if ( -self.valueDic[key] > alpha ) & ( self.typDic[key] > self.paramPlagio ) :
@@ -543,11 +648,13 @@ class Eval():
 
 		r = cuenta / numeroDeNiveles
 
-		print('\n \n ')
-		print('Parámetro alpha  :  ', alpha)
-		print('Número de niveles no plagia con valor mayor que ', alpha, '   :  ', cuenta )
-		print('Número de Elementos no plagia   :  ', numeroDeNiveles ) 
-		print('criterio16  (ratio)  :  ', r )
+		# print('\n \n ')
+		# print('Parámetro alpha  :  ', alpha)
+		# print('Número de niveles no plagia con valor mayor que ', alpha, '   :  ', cuenta )
+		# print('Número de Elementos no plagia   :  ', numeroDeNiveles ) 
+		# print('criterio16  (ratio)  :  ', r )
+
+		return r
 
 
 	def criterio17(self, alpha, gamma):
@@ -557,21 +664,23 @@ class Eval():
 
 		for key in self.valueDic.keys():
 
-			if ( self.typDic[key] > self.paramPlagio ) :
+			if ( self.typDic[str(int(key)-1)] > self.paramPlagio ) :
 				numeroDeNiveles += 1
 
-				if ( -self.valueDic[key] > gamma ) & ( self.typDic[key] > alpha ) :
+				if ( -self.valueDic[key] > gamma ) & ( self.typDic[str(int(key)-1)] > alpha ) :
 					cuenta += 1
 				
 
 		r = cuenta / numeroDeNiveles
 
-		print('\n \n ')
-		print('Parámetro alpha (tipicalidad)  :  ', alpha)
-		print('Parámetro gamma (calidad) :  ', gamma)
-		print('Número de niveles no plagia cona tipicalidad mayor que ', alpha, ' y calidad mayor que ', gamma ,'   :  ', cuenta )
-		print('Número de Elementos no plagia   :  ', numeroDeNiveles ) 
-		print('criterio17  (ratio)  :  ', r )
+		# print('\n \n ')
+		# print('Parámetro alpha (tipicalidad)  :  ', alpha)
+		# print('Parámetro gamma (calidad) :  ', gamma)
+		# print('Número de niveles no plagia cona tipicalidad mayor que ', alpha, ' y calidad mayor que ', gamma ,'   :  ', cuenta )
+		# print('Número de Elementos no plagia   :  ', numeroDeNiveles ) 
+		# print('criterio17  (ratio)  :  ', r )
+
+		return r
 
 
 
@@ -582,22 +691,23 @@ class Eval():
 
 		for key in self.valueDic.keys():
 
-			if ( self.typDic[key] > self.paramPlagio ) :
+			if ( self.typDic[str(int(key)-1)] > self.paramPlagio ) :
 				numeroDeNiveles += 1
 
-				if ( -self.valueDic[key] > gamma ) & ( self.typDic[key] < alpha ) :
+				if ( -self.valueDic[key] > gamma ) & ( self.typDic[str(int(key)-1)] < alpha ) :
 					cuenta += 1
 				
 
 		r = cuenta / numeroDeNiveles
 
-		print('\n \n ')
-		print('Parámetro alpha (tipicalidad)  :  ', alpha)
-		print('Parámetro gamma (calidad) :  ', gamma)
-		print('Número de niveles no plagia cona tipicalidad menor que ', alpha, ' y calidad mayor que ', gamma ,'   :  ', cuenta )
-		print('Número de Elementos no plagia   :  ', numeroDeNiveles ) 
-		print('criterio17  (ratio)  :  ', r )
+		# print('\n \n ')
+		# print('Parámetro alpha (tipicalidad)  :  ', alpha)
+		# print('Parámetro gamma (calidad) :  ', gamma)
+		# print('Número de niveles no plagia cona tipicalidad menor que ', alpha, ' y calidad mayor que ', gamma ,'   :  ', cuenta )
+		# print('Número de Elementos no plagia   :  ', numeroDeNiveles ) 
+		# print('criterio18  (ratio)  :  ', r )
 
+		return r
 
 
 
@@ -703,9 +813,9 @@ class Eval():
 			if float(self.valueDic[str(int(key)+1)]) > -1 :
 				dist = 1
 
-			self.typDic[key] = dist
+			self.typDic[key] = 1 - dist
 
-		self.typDic['0'] = 99.0
+		# self.typDic['0'] = 99.0
 
 
 

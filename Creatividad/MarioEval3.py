@@ -370,7 +370,7 @@ class Eval():
 
 		for key in self.typDic.keys():
 
-			if ( self.typDic[key] > self.paramPlagio ):
+			if ( self.typDic[key] > 0.1 ):
 				numeroDeNiveles += 1
 
 		r = numeroDeNiveles / len(self.typDic.keys())
@@ -400,7 +400,7 @@ class Eval():
 		print('Parámetro de distancia para que un nivel se considere plagio  :  ', self.paramPlagio)
 		print('Suma de typ(a) de niveles a que nos son plagio   :  ', suma )
 		print('Número de Elementos   :  ', numeroDeNiveles )
-		print('criterio10a   :  ', r )
+		print('criterio11   :  ', r )
 
 
 
